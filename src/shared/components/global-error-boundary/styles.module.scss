@@ -1,0 +1,96 @@
+@use 'sass:color';
+@use 'sass:math';
+@use '@styles/variables' as *;
+
+// Mixin for flexbox centering
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Error overlay styles
+.errorOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  @include flex-center;
+  background-color: $error-overlay-bg;
+  backdrop-filter: blur(8px);
+}
+
+// Error container styles
+.errorContainer {
+  background-color: $background-color;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 28rem;
+  width: 100%;
+  text-align: center;
+
+  @media (max-width: 640px) {
+    margin: 0 1rem;
+    padding: 1.5rem;
+  }
+}
+
+// Error icon wrapper
+.errorIconWrapper {
+  @include flex-center;
+  margin-bottom: 1.5rem;
+}
+
+// Error icon styles
+.errorIcon {
+  color: $error-primary;
+  width: 4rem;
+  height: 4rem;
+  stroke-width: 2;
+}
+
+// Error title styles
+.errorTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: $error-primary;
+  margin-bottom: 1rem;
+}
+
+// Error description styles
+.errorDescription {
+  color: $text-color;
+  margin-bottom: 1.5rem;
+}
+
+// Error message pre styles
+.errorMessage {
+  background-color: $error-light;
+  color: $error-text;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  max-height: 10rem;
+  overflow-y: auto;
+}
+
+// Button wrapper
+.buttonWrapper {
+  @include flex-center;
+}
+
+// Reload button styles
+.reloadButton {
+  background-color: $error-primary;
+  color: $white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: color.adjust($error-primary, $lightness: -10%);
+  }
+}

@@ -1,0 +1,43 @@
+@use './variables' as *;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin media-xs {
+  @media (min-width: #{$breakpoint-xs}) and (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin media-sm {
+  @media (min-width: #{$breakpoint-sm}) and (max-width: #{$breakpoint-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin media-md {
+  @media (min-width: #{$breakpoint-md}) and (max-width: #{$breakpoint-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin media-lg {
+  @media (min-width: #{$breakpoint-lg}) and (max-width: #{$breakpoint-xl - 1px}) {
+    @content;
+  }
+}
+
+@mixin media-xl {
+  @media (min-width: #{$breakpoint-xl}) and (max-width: #{$breakpoint-xxl - 1px}) {
+    @content;
+  }
+}
+
+@mixin media-xxl {
+  @media (min-width: #{$breakpoint-xxl}) {
+    @content;
+  }
+}

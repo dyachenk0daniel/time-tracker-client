@@ -1,0 +1,25 @@
+@use '@styles/mixins' as *;
+@use '@styles/variables' as *;
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  box-sizing: border-box;
+
+  @include media-sm {
+    padding: 0 $spacing-sm;
+  }
+}
+
+.fluid {
+  max-width: none;
+}
+
+.centerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
