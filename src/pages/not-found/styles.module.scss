@@ -1,0 +1,76 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.notFoundContainer {
+  min-height: 100vh;
+  padding: $spacing-xxl 0;
+  text-align: center;
+}
+
+.errorIconWrapper {
+  @include flex-center;
+  margin-bottom: $spacing-lg;
+}
+
+.errorIcon {
+  width: $icon-size-lg * 2.5;
+  height: $icon-size-lg * 2.5;
+  color: $danger-color;
+}
+
+.title {
+  font-size: $font-xxl * 3;
+  font-weight: $font-weight-bold;
+  color: $danger-color;
+  margin-bottom: $spacing-lg;
+  line-height: $line-height-sm;
+}
+
+.message {
+  font-size: $font-xl;
+  color: $text-color;
+  margin-bottom: $spacing-md;
+  font-weight: $font-weight-medium;
+}
+
+.description {
+  font-size: $font-md;
+  color: $text-muted;
+  text-align: center;
+  max-width: 500px;
+  margin-bottom: $spacing-xl;
+}
+
+.homeLink {
+  display: inline-block;
+  padding: $spacing-sm $spacing-lg;
+  background-color: $primary-color;
+  color: $white;
+  text-decoration: none;
+  border-radius: $border-radius-md;
+  transition: background-color $transition-duration-normal $transition-timing;
+  font-weight: $font-weight-medium;
+
+  &:hover {
+    background-color: $primary-hover;
+  }
+
+  &:active {
+    background-color: $primary-active;
+  }
+}
+
+@include media-xs {
+  .title {
+    font-size: $font-xxl * 1.5;
+  }
+
+  .message {
+    font-size: $font-lg;
+  }
+
+  .description {
+    font-size: $font-sm;
+    padding: 0 $spacing-md;
+  }
+}

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { GlobalErrorBoundary } from './index';
+import GlobalErrorBoundary from './index';
 
 function ProblemChild() {
   throw new Error('Test error');

@@ -1,0 +1,96 @@
+@use 'sass:color';
+@use '@styles/variables' as *;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $button-padding-y $button-padding-x;
+  font-size: $font-md;
+  font-weight: $font-weight-medium;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition:
+    background-color $transition-duration-normal $transition-timing,
+    color $transition-duration-normal $transition-timing,
+    border-color $transition-duration-normal $transition-timing;
+  text-decoration: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.primary {
+  background-color: $primary-color;
+  color: $white;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $primary-active;
+  }
+}
+
+.secondary {
+  background-color: $secondary-color;
+  color: $white;
+
+  &:hover:not(:disabled) {
+    background-color: $secondary-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $secondary-active;
+  }
+}
+
+.success {
+  background-color: $success-color;
+  color: $white;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($success-color, $lightness: -10%);
+  }
+
+  &:active:not(:disabled) {
+    background-color: color.adjust($success-color, $lightness: -20%);
+  }
+}
+
+.danger {
+  background-color: $danger-color;
+  color: $white;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($danger-color, $lightness: -10%);
+  }
+
+  &:active:not(:disabled) {
+    background-color: color.adjust($danger-color, $lightness: -20%);
+  }
+}
+
+.outline {
+  background-color: transparent;
+  border: $border-width $border-style $gray-500;
+  color: $text-color;
+
+  &:hover:not(:disabled) {
+    background-color: $gray-200;
+    border-color: $gray-600;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $gray-300;
+    border-color: $gray-700;
+  }
+}

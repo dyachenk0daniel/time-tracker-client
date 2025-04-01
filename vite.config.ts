@@ -10,11 +10,12 @@ export default defineConfig({
       '@shared': path.resolve(__dirname, './src/shared'),
       '@assets': path.resolve(__dirname, './src/assets'),
       '@styles': path.resolve(__dirname, './src/shared/styles'),
+      '@pages': path.resolve(__dirname, './src/pages'),
     },
   },
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/setup-tests.ts',
+    setupFiles: './src/app/setup-tests.ts',
   },
 });

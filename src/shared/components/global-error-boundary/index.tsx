@@ -41,7 +41,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   );
 }
 
-export function GlobalErrorBoundary({ children }: PropsWithChildren) {
+function GlobalErrorBoundary({ children }: PropsWithChildren) {
   const handleReset = () => {
     window.location.reload();
   };
@@ -52,3 +52,5 @@ export function GlobalErrorBoundary({ children }: PropsWithChildren) {
     </ErrorBoundary>
   );
 }
+
+export default GlobalErrorBoundary;
