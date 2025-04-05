@@ -1,0 +1,25 @@
+@use '@styles/variables' as *;
+
+.input {
+  padding: $spacing-sm $spacing-md;
+  font-size: $font-md;
+  border: $border-width $border-style $border-color;
+  border-radius: $border-radius-sm;
+  height: $input-height;
+  transition: border-color $transition-duration-normal $transition-timing;
+
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    outline: none;
+  }
+}
+
+.error {
+  border-color: $error-primary;
+
+  &:focus {
+    border-color: $error-primary;
+    box-shadow: 0 0 0 2px rgba($error-primary, 0.2);
+  }
+}

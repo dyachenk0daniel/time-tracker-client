@@ -1,0 +1,7 @@
+@use '@styles/variables' as *;
+
+.errorMessage {
+  font-size: $font-md;
+  color: $error-primary;
+  display: block;
+}

@@ -1,0 +1,40 @@
+@use '@styles/variables' as *;
+
+.alert {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-sm;
+  font-size: $font-md;
+  text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  flex-grow: 1;
+}
+
+.danger {
+  background-color: $error-light;
+  color: $error-primary;
+  border: 1px solid $error-primary;
+}
+
+.success {
+  background-color: $success-color;
+  color: $white;
+  border: 1px solid $success-color;
+}
+
+.info {
+  background-color: $info-color;
+  color: $white;
+  border: 1px solid $info-color;
+}
+
+.warning {
+  background-color: $warning-color;
+  color: $black;
+  border: 1px solid $warning-color;
+}

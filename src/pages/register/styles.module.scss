@@ -1,0 +1,74 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.pageBackground {
+  height: 100vh;
+  background-color: $primary-light;
+
+  @include media-xs {
+    background-color: $white;
+  }
+}
+
+.registerContainer {
+  min-height: 100vh;
+  padding: $spacing-xl 0;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: $spacing-lg;
+  background-color: $white;
+  border-radius: $border-radius-md;
+  box-shadow: $box-shadow-md;
+
+  @include media-xs {
+    box-shadow: initial;
+    border-radius: initial;
+  }
+}
+
+.title {
+  color: $primary-color;
+  margin-bottom: $spacing-md;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: $font-md;
+  color: $text-muted;
+  margin-bottom: $spacing-xl;
+  text-align: center;
+}
+
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.label {
+  font-size: $font-md;
+  color: $text-color;
+  font-weight: $font-weight-medium;
+}
+
+.submitButton {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  margin-top: $spacing-md;
+}
+
+.loginLink {
+  font-size: $font-sm;
+  color: $text-muted;
+  text-align: center;
+  margin-top: $spacing-lg;
+}

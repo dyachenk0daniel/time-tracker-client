@@ -39,6 +39,9 @@
       ],
       "@pages/*": [
         "./src/pages/*"
+      ],
+      "@entities/*": [
+        "./src/entities/*"
       ]
     }
   },
