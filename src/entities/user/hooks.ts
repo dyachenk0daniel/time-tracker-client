@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import TokenUtils from '@shared/utils/token.ts';
-import { RegistrationError } from '@entities/user/errors.ts';
 import UserApi from './api';
 import UserService from './service';
 import { LoginRequest, RegisterRequest, UserResponse } from './types';
@@ -36,9 +35,6 @@ export const useRegisterMutation = () => {
     onSuccess: (data) => {
       TokenUtils.setTokens(data.accessToken, data.refreshToken);
       return queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-    },
-    onError: (error) => {
-      throw new RegistrationError(error.message || 'Unknown error occurred');
     },
   });
 };

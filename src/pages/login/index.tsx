@@ -31,6 +31,10 @@ export function Login() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     clearErrors();
+    setAlert({
+      message: null,
+      visible: false,
+    });
 
     if (validateForm()) {
       try {
