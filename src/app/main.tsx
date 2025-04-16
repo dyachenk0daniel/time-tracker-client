@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@styles/reset.css';
 import '@styles/globals.scss';
 import GlobalErrorBoundary from '@shared/components/global-error-boundary';
+import NotificationContainer from '@shared/components/notification';
 import router from './router.tsx';
 
 const rootElement = document.getElementById('root');
@@ -23,6 +24,7 @@ if (rootElement) {
     <QueryClientProvider client={queryClient}>
       <GlobalErrorBoundary>
         <RouterProvider router={router} />
+        <NotificationContainer />
       </GlobalErrorBoundary>
     </QueryClientProvider>
   );

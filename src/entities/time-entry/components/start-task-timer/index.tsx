@@ -1,4 +1,3 @@
-// file: src/entities/time-entry/components/start-task-timer/index.tsx
 import { ChangeEvent, useEffect, useOptimistic, useState } from 'react';
 import {
   useCreateTimeEntryMutation,
@@ -11,6 +10,10 @@ import TimeEntryUtils from '@entities/time-entry/utils';
 import Input from '@shared/components/input';
 import Button from '@shared/components/button';
 import s from './styles.module.scss';
+import { useNotifications } from '@shared/hooks/use-notifications.ts';
+import { isAxiosError } from 'axios';
+import { ApiErrorPayload } from '@shared/api/types.ts';
+import { ErrorCode } from '@shared/api/error-code.ts';
 
 export function StartTaskTimer() {
   const { data: user } = useCurrentUserQuery();
@@ -23,6 +26,7 @@ export function StartTaskTimer() {
   );
   const [description, setDescription] = useState('');
   const [currentDuration, setCurrentDuration] = useState('--:--:--');
+  const { success, error } = useNotifications();
 
   const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
@@ -36,18 +40,67 @@ export function StartTaskTimer() {
       };
       const newTimeEntry = await createTimeEntry(newEntry);
       setTimeEntry(newTimeEntry);
-    } catch (error) {
+      success('Timer started successfully!');
+    } catch (e) {
+      if (!isAxiosError<ApiErrorPayload>(e)) {
+        console.error('Non-API Error during timer start:', e);
+        error('An unexpected error occurred. Please try again.');
+        return;
+      }
+
+      const errorCode = e.response?.data.code;
+      const serverMessage = e.response?.data.message;
+
+      switch (errorCode) {
+        case ErrorCode.INTERNAL_SERVER_ERROR:
+          error('An internal server error occurred. Please try again later.');
+          break;
+        default:
+          console.error('API Error during timer start:', {
+            code: errorCode,
+            message: serverMessage,
+            status: e.response?.status,
+          });
+          error(serverMessage || 'Failed to start timer. Please try again.');
+      }
+
       setTimeEntry(null);
-      console.error(error);
     }
   };
 
   const stopTimer = async () => {
     try {
       setTimeEntry(null);
-      return stopTimeEntry(timeEntry?.id as string);
-    } catch (error) {
-      console.error(error);
+      await stopTimeEntry(timeEntry?.id as string);
+      success('Timer stopped successfully!');
+    } catch (e) {
+      if (!isAxiosError<ApiErrorPayload>(e)) {
+        console.error('Non-API Error during timer stop:', e);
+        error('An unexpected error occurred. Please try again.');
+        return;
+      }
+
+      const errorCode = e.response?.data.code;
+      const serverMessage = e.response?.data.message;
+
+      switch (errorCode) {
+        case ErrorCode.TIME_ENTRY_NOT_FOUND:
+          error('Time entry not found.');
+          break;
+        case ErrorCode.TIME_ENTRY_ALREADY_STOPPED:
+          error('Time entry is already stopped.');
+          break;
+        case ErrorCode.INTERNAL_SERVER_ERROR:
+          error('An internal server error occurred. Please try again later.');
+          break;
+        default:
+          console.error('API Error during timer stop:', {
+            code: errorCode,
+            message: serverMessage,
+            status: e.response?.status,
+          });
+          error(serverMessage || 'Failed to stop timer. Please try again.');
+      }
     }
   };
 
@@ -101,7 +154,7 @@ export function StartTaskTimer() {
         />
       )}
       <Button
-        disabled={isLoading || !user?.id}
+        disabled={isLoading || !user?.id || !description}
         variant={isLoading ? 'secondary' : !isActive ? 'primary' : 'danger'}
         className={s.startButton}
         onClick={handleStartButtonClick}

@@ -1,0 +1,70 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.notificationContainer {
+  position: fixed;
+  top: $spacing-xl + 73.6px; // 73.6px - header height
+  right: $spacing-lg;
+  z-index: $z-index-tooltip;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  max-width: 400px;
+
+  @include media-until-xxl {
+    top: auto;
+    bottom: $spacing-lg;
+    right: 0;
+    left: 0;
+    align-items: center;
+    padding: 0 $spacing-md;
+  }
+}
+
+.notification {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  box-shadow: $box-shadow-md;
+  font-size: $font-md;
+  width: 100%;
+  transition: transform $transition-duration-normal $transition-timing;
+
+  @include media-until-md {
+    max-width: 500px;
+  }
+}
+
+.success {
+  background-color: $success-color;
+  color: $white;
+  border: 1px solid $success-color;
+}
+
+.error {
+  background-color: $error-light;
+  color: $error-primary;
+  border: 1px solid $error-primary;
+}
+
+.message {
+  flex-grow: 1;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  padding: $spacing-xs;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.closeIcon {
+  width: $icon-size-sm;
+  height: $icon-size-sm;
+  color: inherit;
+}
