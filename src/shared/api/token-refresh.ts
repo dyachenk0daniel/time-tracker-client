@@ -8,11 +8,6 @@ interface QueueItem {
   reject: (error: unknown) => void;
 }
 
-interface RefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
-}
-
 const refreshClient = axios.create(apiConfig);
 let isRefreshing = false;
 let failedQueue: QueueItem[] = [];
@@ -50,12 +45,11 @@ async function tokenRefresh(): Promise<string> {
       throw new Error('Refresh token is missing');
     }
 
-    const {
-      data: { accessToken: newAccessToken, refreshToken: newRefreshToken },
-    } = await refreshClient.post<RefreshTokenResponse>('/refresh', {
+    const response = await refreshClient.post('/auth/refresh', {
       refreshToken,
     });
 
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
     TokenUtils.setTokens(newAccessToken, newRefreshToken);
     processQueue(null, newAccessToken);
 
@@ -63,6 +57,7 @@ async function tokenRefresh(): Promise<string> {
   } catch (error) {
     processQueue(error, null);
     UserService.logout();
+    console.log(error);
 
     throw error;
   } finally {

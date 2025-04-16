@@ -1,6 +1,15 @@
 @use 'sass:color';
 @use 'variables' as *;
 
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
 body {
   font-family: Arial, sans-serif;
   font-size: $font-md;

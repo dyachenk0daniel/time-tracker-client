@@ -1,0 +1,108 @@
+@use '@styles/variables' as *;
+
+%base-entry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.entryItem {
+  @extend %base-entry-item;
+  padding: $spacing-md;
+  border-radius: $border-radius-sm;
+  transition: background-color $transition-duration-normal $transition-timing;
+}
+
+.expandedItem {
+  @extend %base-entry-item;
+  padding: $spacing-sm 0;
+}
+
+.entryLeft {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.countButton {
+  width: $icon-size-lg;
+  height: $icon-size-lg;
+  min-width: $icon-size-lg;
+  padding: $spacing-xs;
+  margin-right: $spacing-md;
+  border-radius: $border-radius-circle;
+  font-size: $font-sm;
+  font-weight: $font-weight-medium;
+}
+
+.countPlaceholder {
+  width: $icon-size-lg;
+  height: $icon-size-lg;
+  margin-right: $spacing-md;
+}
+
+.expandedList {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-sm;
+  margin: $spacing-sm 0 0;
+}
+
+.taskName {
+  font-size: $font-md;
+  color: $text-color;
+}
+
+.entryRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.taskTime {
+  font-size: $font-sm;
+  color: $text-muted;
+  min-width: 220px;
+  text-align: right;
+}
+
+.duration {
+  font-size: $font-md;
+  min-width: 60px;
+  text-align: right;
+}
+
+.entryActions {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.continueButton {
+  padding: $spacing-xs;
+  width: $icon-size-lg;
+  height: $icon-size-lg;
+}
+
+.menuButton {
+  padding: $spacing-xs;
+  width: $icon-size-lg;
+  height: $icon-size-lg;
+}
+
+.menuIcon {
+  width: $icon-size-md;
+  height: $icon-size-md;
+  color: $text-muted;
+}
+
+.continueIcon {
+  width: $icon-size-md;
+  height: $icon-size-md;
+  color: $text-muted;
+}
+
+.verticalDivider {
+  width: $border-width;
+  height: 24px;
+  background-color: $border-color;
+  margin: 0 $spacing-sm;
+}

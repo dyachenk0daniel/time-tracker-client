@@ -1,0 +1,50 @@
+@use '@styles/variables' as *;
+
+.inputSection {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+}
+
+.taskInput {
+  flex: 1;
+  height: $input-height;
+}
+
+.taskDescription {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.taskName {
+  font-size: $font-md;
+  color: $text-color;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.duration {
+  font-size: $font-md;
+  // color: $text-muted;
+  min-width: 60px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.verticalDivider {
+  width: $border-width;
+  height: 24px;
+  background-color: $border-color;
+  margin: 0 $spacing-sm;
+}
+
+.startButton {
+  padding: $spacing-sm $spacing-lg;
+}

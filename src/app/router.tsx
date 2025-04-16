@@ -3,7 +3,8 @@ import { Home } from '@pages/home';
 import { Login } from '@pages/login';
 import { Register } from '@pages/register';
 import NotFound from '@pages/not-found';
-import ProtectedRoute from '@shared/components/protected-route.tsx';
+import ProtectedRoute from '@shared/components/protected-route';
+import Layout from '@shared/components/layout';
 import { Routes } from '@shared/constants.ts';
 
 const router = createBrowserRouter([
@@ -11,7 +12,9 @@ const router = createBrowserRouter([
     path: Routes.HOME,
     element: (
       <ProtectedRoute>
-        <Home />
+        <Layout>
+          <Home />
+        </Layout>
       </ProtectedRoute>
     ),
   },

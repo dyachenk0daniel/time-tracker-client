@@ -23,6 +23,14 @@ describe('Button', () => {
     expect(button).not.toHaveClass(s.primary);
   });
 
+  it('should apply ghost variant class', () => {
+    render(<Button variant="ghost">Ghost Button</Button>);
+    const button = screen.getByText('Ghost Button');
+    expect(button).toHaveClass(s.button);
+    expect(button).toHaveClass(s.ghost);
+    expect(button).not.toHaveClass(s.primary);
+  });
+
   it('should have disabled attribute when disabled prop is true', () => {
     render(<Button disabled>Disabled Button</Button>);
     const button = screen.getByText('Disabled Button');

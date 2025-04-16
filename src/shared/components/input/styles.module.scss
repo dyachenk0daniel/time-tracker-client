@@ -6,12 +6,22 @@
   border: $border-width $border-style $border-color;
   border-radius: $border-radius-sm;
   height: $input-height;
-  transition: border-color $transition-duration-normal $transition-timing;
+  transition:
+    border-color $transition-duration-normal $transition-timing,
+    box-shadow $transition-duration-normal $transition-timing;
 
   &:focus {
     border-color: $primary-color;
     box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
     outline: none;
+  }
+
+  &:disabled {
+    background-color: $gray-200;
+    border-color: $gray-400;
+    color: $text-muted;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 }
 

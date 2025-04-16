@@ -5,10 +5,10 @@
   width: 100%;
   max-width: $container-max-width;
   margin: 0 auto;
-  padding: 0 $spacing-md;
+  padding: 0 $spacing-lg;
   box-sizing: border-box;
 
-  @include media-sm {
+  @include media-xs {
     padding: 0 $spacing-sm;
   }
 }

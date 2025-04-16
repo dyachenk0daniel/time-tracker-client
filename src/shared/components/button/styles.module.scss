@@ -94,3 +94,16 @@
     border-color: $gray-700;
   }
 }
+
+.ghost {
+  background-color: transparent;
+  color: $text-color;
+
+  &:hover:not(:disabled) {
+    background-color: $gray-200;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $gray-300;
+  }
+}

@@ -2,7 +2,7 @@ import { ComponentProps, PropsWithChildren } from 'react';
 import cn from 'classnames';
 import s from './styles.module.scss';
 
-type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'outline';
+type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'outline' | 'ghost';
 
 interface Props extends ComponentProps<'button'> {
   variant?: ButtonVariant;
@@ -19,6 +19,7 @@ function Button({ children, className, variant = 'primary', ...props }: PropsWit
           [s.success]: variant === 'success',
           [s.danger]: variant === 'danger',
           [s.outline]: variant === 'outline',
+          [s.ghost]: variant === 'ghost',
         },
         className
       )}

@@ -1,0 +1,28 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+
+.homeContainer {
+  min-height: 100vh;
+  padding: $spacing-xl $spacing-lg;
+
+  @include media-until-xl {
+    padding: $spacing-xl 0;
+  }
+}
+
+.taskWrapper {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  background-color: $white;
+
+  @include media-xs {
+    padding: $spacing-sm;
+  }
+
+  @include media-xl-up {
+    border-radius: $border-radius-md;
+    box-shadow: $box-shadow-md;
+  }
+}
