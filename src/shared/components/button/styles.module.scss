@@ -16,7 +16,7 @@
     border-color $transition-duration-normal $transition-timing;
   text-decoration: none;
 
-  &:focus {
+  &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
   }

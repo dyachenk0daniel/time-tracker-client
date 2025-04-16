@@ -80,6 +80,14 @@
   padding: $spacing-xs;
   width: $icon-size-lg;
   height: $icon-size-lg;
+  &.stop {
+    color: $error-primary;
+    background-color: rgba($error-primary, 0.1);
+    border-radius: $border-radius-sm;
+    &:hover {
+      background-color: rgba($error-primary, 0.2);
+    }
+  }
 }
 
 .menuButton {
@@ -97,7 +105,7 @@
 .continueIcon {
   width: $icon-size-md;
   height: $icon-size-md;
-  color: $text-muted;
+  color: inherit;
 }
 
 .verticalDivider {

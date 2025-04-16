@@ -148,7 +148,7 @@ export function StartTaskTimer() {
         />
       )}
       <Button
-        disabled={isLoading || !description.trim()}
+        disabled={isLoading || (!isActive && !description.trim())}
         variant={isLoading ? 'secondary' : !isActive ? 'primary' : 'danger'}
         className={s.startButton}
         onClick={handleStartButtonClick}
