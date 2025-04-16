@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import TimeEntryApi from '@entities/time-entry/api';
-import { CreateTimeEntry } from '@entities/time-entry/types';
 
 enum TimeEntryQueryKeys {
   TIME_ENTRIES = 'time-entries',
@@ -17,7 +16,7 @@ export function useGetTimeEntriesQuery() {
 export function useCreateTimeEntryMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateTimeEntry) => TimeEntryApi.create(data),
+    mutationFn: (description: string) => TimeEntryApi.create(description),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.TIME_ENTRIES], exact: true });
       queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.ACTIVE_TIME_ENTRY], exact: true });

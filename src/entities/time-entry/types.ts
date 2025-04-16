@@ -7,5 +7,3 @@ export interface TimeEntryResponse {
   createdAt: string;
   updatedAt: string | null;
 }
-
-export type CreateTimeEntry = Pick<TimeEntryResponse, 'userId' | 'description'>;

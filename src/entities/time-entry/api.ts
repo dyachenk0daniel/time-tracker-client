@@ -1,4 +1,4 @@
-import { CreateTimeEntry, TimeEntryResponse } from '@entities/time-entry/types.ts';
+import { TimeEntryResponse } from '@entities/time-entry/types.ts';
 import apiClient from '@shared/api/api-client.ts';
 
 class TimeEntryApi {
@@ -8,8 +8,8 @@ class TimeEntryApi {
     return response.data;
   }
 
-  static async create(data: CreateTimeEntry): Promise<TimeEntryResponse> {
-    const response = await apiClient.post<TimeEntryResponse>('/time-entries', data);
+  static async create(description: string): Promise<TimeEntryResponse> {
+    const response = await apiClient.post<TimeEntryResponse>('/time-entries', { description });
 
     return response.data;
   }

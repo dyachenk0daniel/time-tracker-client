@@ -4,7 +4,6 @@ import {
   useGetActiveTimeEntryQuery,
   useStopTimeEntryMutation,
 } from '@entities/time-entry/hooks';
-import { useCurrentUserQuery } from '@entities/user/hooks';
 import { TimeEntryResponse } from '@entities/time-entry/types';
 import TimeEntryUtils from '@entities/time-entry/utils';
 import Input from '@shared/components/input';
@@ -16,7 +15,6 @@ import { ApiErrorPayload } from '@shared/api/types.ts';
 import { ErrorCode } from '@shared/api/error-code.ts';
 
 export function StartTaskTimer() {
-  const { data: user } = useCurrentUserQuery();
   const { mutateAsync: createTimeEntry } = useCreateTimeEntryMutation();
   const { data: activeTimeEntry, isLoading } = useGetActiveTimeEntryQuery();
   const { mutateAsync: stopTimeEntry } = useStopTimeEntryMutation();
@@ -34,11 +32,7 @@ export function StartTaskTimer() {
 
   const startTimer = async () => {
     try {
-      const newEntry = {
-        userId: user?.id as string,
-        description,
-      };
-      const newTimeEntry = await createTimeEntry(newEntry);
+      const newTimeEntry = await createTimeEntry(description);
       setTimeEntry(newTimeEntry);
       success('Timer started successfully!');
     } catch (e) {
@@ -70,8 +64,8 @@ export function StartTaskTimer() {
 
   const stopTimer = async () => {
     try {
-      setTimeEntry(null);
       await stopTimeEntry(timeEntry?.id as string);
+      setTimeEntry(null);
       success('Timer stopped successfully!');
     } catch (e) {
       if (!isAxiosError<ApiErrorPayload>(e)) {
@@ -154,7 +148,7 @@ export function StartTaskTimer() {
         />
       )}
       <Button
-        disabled={isLoading || !user?.id || !description}
+        disabled={isLoading || !description.trim()}
         variant={isLoading ? 'secondary' : !isActive ? 'primary' : 'danger'}
         className={s.startButton}
         onClick={handleStartButtonClick}
