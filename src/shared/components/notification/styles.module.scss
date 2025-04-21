@@ -9,7 +9,6 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  max-width: 400px;
 
   @include media-until-xxl {
     top: auto;
@@ -24,7 +23,7 @@
 .notification {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding: $spacing-sm $spacing-md;
   border-radius: $border-radius-md;
@@ -32,6 +31,7 @@
   font-size: $font-md;
   width: 100%;
   transition: transform $transition-duration-normal $transition-timing;
+  column-gap: $spacing-md;
 
   @include media-until-md {
     max-width: 500px;
@@ -51,7 +51,8 @@
 }
 
 .message {
-  flex-grow: 1;
+  flex: 1;
+  max-width: 400px;
 }
 
 .closeButton {
@@ -61,6 +62,7 @@
   background: none;
   border: none;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .closeIcon {
