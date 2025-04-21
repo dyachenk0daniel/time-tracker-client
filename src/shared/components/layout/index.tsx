@@ -1,6 +1,8 @@
 import { PropsWithChildren } from 'react';
 import Container from '@shared/components/container';
 import TimeClockIcon from '@shared/components/icons/time-clock';
+import AuthService from '@entities/user/auth-service.ts';
+import Button from '@shared/components/button';
 import s from './styles.module.scss';
 
 export function Layout({ children }: PropsWithChildren) {
@@ -13,7 +15,9 @@ export function Layout({ children }: PropsWithChildren) {
             <TimeClockIcon className={s.headerIcon} />
           </div>
           <nav className={s.nav}>
-            <button className={s.logoutButton}>Logout</button>
+            <Button variant="ghost" className={s.logoutButton} onClick={() => AuthService.logout()}>
+              Logout
+            </Button>
           </nav>
         </Container>
       </header>

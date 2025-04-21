@@ -47,12 +47,6 @@
 .logoutButton {
   background-color: $white;
   color: $primary-color;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius-md;
-  font-size: $font-md;
-  font-weight: $font-weight-medium;
-  cursor: pointer;
-  transition: background-color $transition-duration-normal $transition-timing;
 
   &:hover {
     background-color: $gray-200;

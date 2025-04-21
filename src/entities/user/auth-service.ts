@@ -1,10 +1,10 @@
 import TokenUtils from '@shared/utils/token.ts';
 
-class UserService {
+class AuthService {
   static logout(): void {
     TokenUtils.clearTokens();
     window.location.href = '/';
   }
 }
 
-export default UserService;
+export default AuthService;

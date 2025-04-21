@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import TokenUtils from '@shared/utils/token.ts';
 import UserApi from './api';
-import UserService from './service';
+import AuthService from './auth-service.ts';
 import { LoginRequest, RegisterRequest, UserResponse } from './types';
 
 export const useCurrentUserQuery = () => {
@@ -43,7 +43,7 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return () => {
-    UserService.logout();
+    AuthService.logout();
     queryClient.removeQueries({ queryKey: ['currentUser'] });
   };
 };

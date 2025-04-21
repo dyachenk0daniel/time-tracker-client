@@ -1,7 +1,7 @@
 import axios from 'axios';
 import TokenUtils from '@shared/utils/token.ts';
 import apiConfig from './config';
-import UserService from '@entities/user/service.ts';
+import AuthService from '@entities/user/auth-service.ts';
 
 interface QueueItem {
   resolve: (token: string) => void;
@@ -56,7 +56,7 @@ async function tokenRefresh(): Promise<string> {
     return newAccessToken;
   } catch (error) {
     processQueue(error, null);
-    UserService.logout();
+    AuthService.logout();
     console.log(error);
 
     throw error;

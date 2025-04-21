@@ -19,7 +19,7 @@ describe('Layout', () => {
     expect(header).toBeInTheDocument();
     expect(header).toHaveClass(s.header);
 
-    const title = screen.getByRole('heading', { name: /task tracker/i });
+    const title = screen.getByRole('heading', { name: /time tracker/i });
     expect(title).toBeInTheDocument();
     expect(title).toHaveClass(s.headerTitle);
 

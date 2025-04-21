@@ -3,9 +3,9 @@ import {
   useCreateTimeEntryMutation,
   useGetActiveTimeEntryQuery,
   useStopTimeEntryMutation,
-} from '@entities/time-entry/hooks';
-import { TimeEntryResponse } from '@entities/time-entry/types';
-import TimeEntryUtils from '@entities/time-entry/utils';
+} from '@entities/time-entry/hooks.ts';
+import { TimeEntryResponse } from '@entities/time-entry/types.ts';
+import TimeEntryUtils from '@entities/time-entry/utils.ts';
 import Input from '@shared/components/input';
 import Button from '@shared/components/button';
 import s from './styles.module.scss';
@@ -14,7 +14,7 @@ import { isAxiosError } from 'axios';
 import { ApiErrorPayload } from '@shared/api/types.ts';
 import { ErrorCode } from '@shared/api/error-code.ts';
 
-export function StartTaskTimer() {
+export function TaskTimerControl() {
   const { mutateAsync: createTimeEntry } = useCreateTimeEntryMutation();
   const { data: activeTimeEntry, isLoading } = useGetActiveTimeEntryQuery();
   const { mutateAsync: stopTimeEntry } = useStopTimeEntryMutation();
@@ -160,4 +160,4 @@ export function StartTaskTimer() {
   );
 }
 
-export default StartTaskTimer;
+export default TaskTimerControl;

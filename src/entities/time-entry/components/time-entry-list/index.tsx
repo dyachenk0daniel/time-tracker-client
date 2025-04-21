@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { isAxiosError } from 'axios';
-import TimeEntryUtils from '@entities/time-entry/utils';
+import TimeEntryUtils from '@entities/time-entry/utils.ts';
 import TimeEntryItem from '@entities/time-entry/components/time-entry-item';
 import {
   useCreateTimeEntryMutation,
