@@ -41,3 +41,14 @@ export function useStopTimeEntryMutation() {
     },
   });
 }
+
+export function useDeleteTimeEntryMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => TimeEntryApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.TIME_ENTRIES], exact: true });
+      queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.ACTIVE_TIME_ENTRY], exact: true });
+    },
+  });
+}

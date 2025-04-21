@@ -4,6 +4,7 @@ import TimeEntryUtils from '@entities/time-entry/utils';
 import TimeEntryItem from '@entities/time-entry/components/time-entry-item';
 import {
   useCreateTimeEntryMutation,
+  useDeleteTimeEntryMutation,
   useGetActiveTimeEntryQuery,
   useGetTimeEntriesQuery,
   useStopTimeEntryMutation,
@@ -19,6 +20,7 @@ function TimeEntryList() {
   const { data: activeTimeEntry } = useGetActiveTimeEntryQuery();
   const { mutateAsync: createTimeEntry } = useCreateTimeEntryMutation();
   const { mutateAsync: stopTimeEntry } = useStopTimeEntryMutation();
+  const { mutateAsync: deleteTimeEntry } = useDeleteTimeEntryMutation();
   const groupedEntriesByDescription = useMemo(() => {
     if (!timeEntries) return [];
 
@@ -100,6 +102,38 @@ function TimeEntryList() {
     }
   };
 
+  const handleDeleteTaskTimer = async (id: string) => {
+    try {
+      await deleteTimeEntry(id);
+      success('Timer deleted successfully!');
+    } catch (e) {
+      if (!isAxiosError<ApiErrorPayload>(e)) {
+        console.error('Non-API Error during timer delete:', e);
+        error('An unexpected error occurred. Please try again.');
+        return;
+      }
+
+      const errorCode = e.response?.data.code;
+      const serverMessage = e.response?.data.message;
+
+      switch (errorCode) {
+        case ErrorCode.TIME_ENTRY_NOT_FOUND:
+          error('Time entry not found.');
+          break;
+        case ErrorCode.INTERNAL_SERVER_ERROR:
+          error('An internal server error occurred. Please try again later.');
+          break;
+        default:
+          console.error('API Error during timer delete:', {
+            code: errorCode,
+            message: serverMessage,
+            status: e.response?.status,
+          });
+          error(serverMessage || 'Failed to delete timer. Please try again.');
+      }
+    }
+  };
+
   return (
     <div className={s.entriesList}>
       {groupedEntriesByDescription.map((groupedEntry) => (
@@ -110,6 +144,7 @@ function TimeEntryList() {
             entries={groupedEntry.entries}
             onContinueTaskTimer={handleContinueTaskTimer}
             onStopTaskTimer={handleStopTaskTimer}
+            onDeleteTimeEntry={handleDeleteTaskTimer}
           />
         </div>
       ))}

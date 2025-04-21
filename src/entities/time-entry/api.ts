@@ -25,6 +25,12 @@ class TimeEntryApi {
 
     return response.data;
   }
+
+  static async delete(id: string): Promise<{ message: string }> {
+    const response = await apiClient.delete<{ message: string }>(`/time-entries/${id}`);
+
+    return response.data;
+  }
 }
 
 export default TimeEntryApi;

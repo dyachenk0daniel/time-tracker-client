@@ -90,10 +90,15 @@
   }
 }
 
-.menuButton {
+.deleteButton {
   padding: $spacing-xs;
   width: $icon-size-lg;
   height: $icon-size-lg;
+  color: $error-primary;
+  &:hover {
+    background-color: rgba($error-primary, 0.1);
+    border-radius: $border-radius-sm;
+  }
 }
 
 .menuIcon {
