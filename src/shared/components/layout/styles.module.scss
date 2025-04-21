@@ -19,10 +19,22 @@
   align-items: center;
 }
 
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.headerIcon {
+  height: 50px;
+
+  @include media-xs {
+    height: 32px;
+  }
+}
+
 .headerTitle {
   color: $white;
-  font-size: $font-lg;
-  font-weight: $font-weight-medium;
   margin-bottom: initial;
 }
 

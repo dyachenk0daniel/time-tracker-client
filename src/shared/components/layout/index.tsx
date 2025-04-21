@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import Container from '@shared/components/container';
+import TimeClockIcon from '@shared/components/icons/time-clock';
 import s from './styles.module.scss';
 
 export function Layout({ children }: PropsWithChildren) {
@@ -7,7 +8,10 @@ export function Layout({ children }: PropsWithChildren) {
     <div className={s.layout}>
       <header className={s.header}>
         <Container className={s.headerContainer}>
-          <h1 className={s.headerTitle}>Task Tracker</h1>
+          <div className={s.titleContainer}>
+            <h1 className={s.headerTitle}>Time Tracker</h1>
+            <TimeClockIcon className={s.headerIcon} />
+          </div>
           <nav className={s.nav}>
             <button className={s.logoutButton}>Logout</button>
           </nav>
