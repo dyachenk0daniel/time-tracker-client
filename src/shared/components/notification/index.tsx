@@ -9,11 +9,13 @@ interface NotificationItemProps extends ComponentProps<'div'> {
   onClose: (id: string) => void;
 }
 
+const NOTIFICATION_AUTO_CLOSE_TIMEOUT = 5000;
+
 function NotificationItem({ notification, onClose, ...props }: NotificationItemProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose(notification.id);
-    }, 5000);
+    }, NOTIFICATION_AUTO_CLOSE_TIMEOUT);
 
     return () => clearTimeout(timer);
   }, [notification.id, onClose]);
