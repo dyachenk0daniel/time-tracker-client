@@ -15,6 +15,7 @@ interface TimeEntryRowProps extends ComponentProps<'div'> {
   isTimerRunning?: boolean;
   count?: number;
   isExpandable?: boolean;
+  isExpandLoading?: boolean;
   onExpandToggle?: () => void;
 }
 
@@ -25,6 +26,7 @@ export function TimeEntryRow({
   duration,
   count,
   isExpandable,
+  isExpandLoading = false,
   isTimerRunning = false,
   onExpandToggle,
   onContinueTaskTimer,
@@ -36,9 +38,15 @@ export function TimeEntryRow({
   return (
     <div className={cn(s.timeEntryRow, className)} {...props}>
       <div className={s.entryLeft}>
-        {isExpandable && count && count > 1 && (
+        {isExpandable && (count === undefined || count > 1) && (
           <Button variant="outline" className={s.countButton} onClick={onExpandToggle}>
-            {count}
+            {isExpandLoading ? (
+              <svg className={s.spinner} viewBox="0 0 20 20" fill="none">
+                <circle className={s.spinnerPath} cx="10" cy="10" r="7" strokeWidth="2.5" />
+              </svg>
+            ) : (
+              (count ?? '…')
+            )}
           </Button>
         )}
         {!isExpandable && <span className={s.countPlaceholder}></span>}

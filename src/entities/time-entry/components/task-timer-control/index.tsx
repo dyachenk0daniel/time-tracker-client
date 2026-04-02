@@ -4,7 +4,6 @@ import {
   useGetActiveTimeEntryQuery,
   useStopTimeEntryMutation,
 } from '@entities/time-entry/hooks.ts';
-import { TimeEntryResponse } from '@entities/time-entry/types.ts';
 import TimeEntryUtils from '@entities/time-entry/utils.ts';
 import Input from '@shared/components/input';
 import Button from '@shared/components/button';
@@ -13,12 +12,13 @@ import { useNotifications } from '@shared/hooks/use-notifications.ts';
 import { isAxiosError } from 'axios';
 import { ApiErrorPayload } from '@shared/api/types.ts';
 import { ErrorCode } from '@shared/api/error-code.ts';
+import { TimeEntry } from '@entities/time-entry/types.ts';
 
 export function TaskTimerControl() {
   const { mutateAsync: createTimeEntry } = useCreateTimeEntryMutation();
   const { data: activeTimeEntry, isLoading } = useGetActiveTimeEntryQuery();
   const { mutateAsync: stopTimeEntry } = useStopTimeEntryMutation();
-  const [timeEntry, setTimeEntry] = useOptimistic<Partial<TimeEntryResponse> | null, Partial<TimeEntryResponse> | null>(
+  const [timeEntry, setTimeEntry] = useOptimistic<Partial<TimeEntry> | null, Partial<TimeEntry> | null>(
     activeTimeEntry || null,
     (currentTimeEntry, newTimeEntry) => ({ ...currentTimeEntry, ...newTimeEntry })
   );
@@ -116,6 +116,7 @@ export function TaskTimerControl() {
     }
 
     let animationFrameId: number;
+
     const updateTimer = () => {
       const now = new Date().toISOString();
       const duration = TimeEntryUtils.formatEntryDuration(timeEntry?.startTime as string, now);

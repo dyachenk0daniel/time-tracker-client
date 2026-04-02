@@ -1,0 +1,55 @@
+@use '@styles/variables' as *;
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.list {
+  display: inline-flex;
+  align-items: center;
+}
+
+.button {
+  min-width: 40px;
+  height: 40px;
+  padding: $spacing-sm;
+  border-radius: $border-radius-circle;
+  background-color: transparent;
+  cursor: pointer;
+  color: $text-muted;
+  border: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    background-color: $gray-200;
+  }
+}
+
+.page {
+  @extend .button;
+}
+
+.active {
+  font-weight: $font-weight-bold;
+  pointer-events: none;
+  background-color: $gray-200;
+  color: $gray-900;
+}
+
+.ellipsis {
+  padding: 0 6px;
+  user-select: none;
+  color: $text-muted;
+}
+
+.recordsInfo {
+  color: $text-muted;
+  font-size: $font-sm;
+}

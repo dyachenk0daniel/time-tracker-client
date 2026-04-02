@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,scss}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,scss}\"",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.71.10",
+    "@tanstack/react-virtual": "^3.13.23",
     "axios": "^1.8.4",
     "classnames": "^2.5.1",
     "lodash-es": "^4.17.21",

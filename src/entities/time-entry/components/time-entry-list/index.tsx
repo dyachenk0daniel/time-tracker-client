@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { isAxiosError } from 'axios';
-import TimeEntryUtils from '@entities/time-entry/utils.ts';
 import TimeEntryItem from '@entities/time-entry/components/time-entry-item';
 import {
   useCreateTimeEntryMutation,
@@ -10,31 +9,36 @@ import {
   useStopTimeEntryMutation,
 } from '@entities/time-entry/hooks.ts';
 import Loading from '@shared/components/loading';
+import Pagination from '@shared/components/pagination';
 import { ApiErrorPayload } from '@shared/api/types.ts';
 import { ErrorCode } from '@shared/api/error-code.ts';
 import { useNotifications } from '@shared/hooks/use-notifications.ts';
 import s from './styles.module.scss';
 
+const LIMIT = 10;
+
+function isGroupTimerRunning(groupId: string, activeEntry: { groupId: string } | undefined): boolean {
+  return activeEntry?.groupId === groupId;
+}
+
 function TimeEntryList() {
-  const { data: timeEntries, isLoading } = useGetTimeEntriesQuery();
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useGetTimeEntriesQuery(page, LIMIT);
   const { data: activeTimeEntry } = useGetActiveTimeEntryQuery();
   const { mutateAsync: createTimeEntry } = useCreateTimeEntryMutation();
   const { mutateAsync: stopTimeEntry } = useStopTimeEntryMutation();
   const { mutateAsync: deleteTimeEntry } = useDeleteTimeEntryMutation();
-  const groupedEntriesByDescription = useMemo(() => {
-    if (!timeEntries) return [];
-
-    return TimeEntryUtils.groupEntriesByDescription(timeEntries);
-  }, [timeEntries]);
   const { success, error } = useNotifications();
 
   if (isLoading) {
     return <Loading data-testid="loading" />;
   }
 
-  if (!timeEntries?.length) {
+  if (!data?.items.length) {
     return null;
   }
+
+  const totalPages = Math.ceil((data.total ?? 0) / LIMIT);
 
   const handleContinueTaskTimer = async (description: string) => {
     try {
@@ -136,18 +140,27 @@ function TimeEntryList() {
 
   return (
     <div className={s.entriesList}>
-      {groupedEntriesByDescription.map((groupedEntry) => (
-        <div key={groupedEntry.description} className={s.entryGroup}>
+      {data.items.map((group) => (
+        <div key={group.id} className={s.entryGroup}>
           <TimeEntryItem
-            isTimerRunning={activeTimeEntry?.description === groupedEntry.description}
-            description={groupedEntry.description}
-            entries={groupedEntry.entries}
+            groupId={group.id}
+            entriesCount={group.entriesCount}
+            entry={group.entry}
+            isTimerRunning={isGroupTimerRunning(group.id, activeTimeEntry)}
+            description={group.description}
             onContinueTaskTimer={handleContinueTaskTimer}
             onStopTaskTimer={handleStopTaskTimer}
             onDeleteTimeEntry={handleDeleteTaskTimer}
           />
         </div>
       ))}
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={data.total}
+        limit={LIMIT}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

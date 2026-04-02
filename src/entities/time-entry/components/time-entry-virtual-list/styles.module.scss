@@ -1,0 +1,22 @@
+@use '@styles/variables' as *;
+
+.virtualList {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: $spacing-sm $spacing-md;
+  margin: $spacing-sm 0 0;
+  border-radius: $border-radius-sm;
+}
+
+.entryItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+}
+
+.loadingRow {
+  padding: $spacing-sm 0;
+  color: $gray-500;
+  font-size: $font-sm;
+}
