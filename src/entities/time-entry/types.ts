@@ -1,9 +1,24 @@
-export interface TimeEntryResponse {
+export interface TimeEntry {
   id: string;
-  userId: string;
+  groupId: string;
   description: string;
   startTime: string;
   endTime: string | null;
   createdAt: string;
   updatedAt: string | null;
+}
+
+export interface TimeEntryGroup {
+  id: string;
+  userId: string;
+  description: string;
+  entriesCount: number;
+  entry: TimeEntry | null;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
 }
