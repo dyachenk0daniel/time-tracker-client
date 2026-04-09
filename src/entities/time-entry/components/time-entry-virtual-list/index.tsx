@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { TimeEntry } from '@entities/time-entry/types';
-import TimeEntryUtils from '@entities/time-entry/utils';
+import TimeEntryHelpers from '@entities/time-entry/utils';
 import TimeEntryRow from '@entities/time-entry/components/time-entry-row';
 import s from './styles.module.scss';
 
@@ -12,6 +12,26 @@ interface TimeEntryVirtualListProps {
   isFetchingNextPage: boolean;
   onFetchNextPage: () => void;
   onDeleteTimeEntry: (id: string) => void;
+}
+
+function useInfiniteScrollTrigger(
+  virtualItems: Array<{ index: number }>,
+  entriesLength: number,
+  hasNextPage: boolean,
+  isFetchingNextPage: boolean,
+  onFetchNextPage: () => void
+): void {
+  useEffect(() => {
+    const lastItem = virtualItems.at(-1);
+    if (!lastItem) return;
+
+    const isNearEnd = lastItem.index >= entriesLength - 1;
+    const canFetch = hasNextPage && !isFetchingNextPage;
+
+    if (isNearEnd && canFetch) {
+      onFetchNextPage();
+    }
+  }, [virtualItems, entriesLength, hasNextPage, isFetchingNextPage, onFetchNextPage]);
 }
 
 export function TimeEntryVirtualList({
@@ -32,18 +52,14 @@ export function TimeEntryVirtualList({
     overscan: 5,
   });
 
-  useEffect(() => {
-    const lastItem = virtualizer.getVirtualItems().at(-1);
-    if (!lastItem) return;
-    if (lastItem.index >= entries.length - 1 && hasNextPage && !isFetchingNextPage) {
-      onFetchNextPage();
-    }
-  }, [virtualizer.getVirtualItems(), entries.length, hasNextPage, isFetchingNextPage, onFetchNextPage]);
+  const virtualItems = virtualizer.getVirtualItems();
+
+  useInfiniteScrollTrigger(virtualItems, entries.length, hasNextPage, isFetchingNextPage, onFetchNextPage);
 
   return (
     <div ref={parentRef} className={s.virtualList}>
       <div style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}>
-        {virtualizer.getVirtualItems().map((virtualItem) => {
+        {virtualItems.map((virtualItem) => {
           const isLoaderRow = virtualItem.index >= entries.length;
           const entry = entries[virtualItem.index];
 
@@ -68,7 +84,7 @@ export function TimeEntryVirtualList({
                   description={description}
                   startTime={entry.startTime}
                   endTime={entry.endTime}
-                  duration={TimeEntryUtils.formatEntryDuration(entry.startTime, entry.endTime)}
+                  duration={TimeEntryHelpers.formatEntryDuration(entry.startTime, entry.endTime)}
                   onDeleteTimeEntry={() => onDeleteTimeEntry(entry.id)}
                 />
               )}

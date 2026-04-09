@@ -89,12 +89,6 @@
   }
 }
 
-.menuIcon {
-  width: $icon-size-md;
-  height: $icon-size-md;
-  color: $text-muted;
-}
-
 .continueIcon {
   width: $icon-size-md;
   height: $icon-size-md;
@@ -111,32 +105,4 @@
 .spinner {
   width: 14px;
   height: 14px;
-  animation: rotate 1s linear infinite;
-}
-
-.spinnerPath {
-  stroke: currentColor;
-  stroke-linecap: round;
-  animation: dash 1s ease-in-out infinite;
-}
-
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes dash {
-  0% {
-    stroke-dasharray: 1, 50;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dasharray: 30, 50;
-    stroke-dashoffset: -12;
-  }
-  100% {
-    stroke-dasharray: 30, 50;
-    stroke-dashoffset: -42;
-  }
 }

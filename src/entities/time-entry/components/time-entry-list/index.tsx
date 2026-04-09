@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { isAxiosError } from 'axios';
 import TimeEntryItem from '@entities/time-entry/components/time-entry-item';
 import {
   useCreateTimeEntryMutation,
@@ -8,14 +7,13 @@ import {
   useGetTimeEntriesQuery,
   useStopTimeEntryMutation,
 } from '@entities/time-entry/hooks.ts';
+import { GROUPS_LIMIT } from '@entities/time-entry/constants';
+import { handleTimeEntryError } from '@entities/time-entry/handle-error';
+import { ErrorCode } from '@shared/api/error-code';
 import Loading from '@shared/components/loading';
 import Pagination from '@shared/components/pagination';
-import { ApiErrorPayload } from '@shared/api/types.ts';
-import { ErrorCode } from '@shared/api/error-code.ts';
 import { useNotifications } from '@shared/hooks/use-notifications.ts';
 import s from './styles.module.scss';
-
-const LIMIT = 10;
 
 function isGroupTimerRunning(groupId: string, activeEntry: { groupId: string } | undefined): boolean {
   return activeEntry?.groupId === groupId;
@@ -23,12 +21,12 @@ function isGroupTimerRunning(groupId: string, activeEntry: { groupId: string } |
 
 function TimeEntryList() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useGetTimeEntriesQuery(page, LIMIT);
+  const { data, isLoading } = useGetTimeEntriesQuery(page, GROUPS_LIMIT);
   const { data: activeTimeEntry } = useGetActiveTimeEntryQuery();
   const { mutateAsync: createTimeEntry } = useCreateTimeEntryMutation();
   const { mutateAsync: stopTimeEntry } = useStopTimeEntryMutation();
   const { mutateAsync: deleteTimeEntry } = useDeleteTimeEntryMutation();
-  const { success, error } = useNotifications();
+  const { success, error: notify } = useNotifications();
 
   if (isLoading) {
     return <Loading data-testid="loading" />;
@@ -38,71 +36,27 @@ function TimeEntryList() {
     return null;
   }
 
-  const totalPages = Math.ceil((data.total ?? 0) / LIMIT);
+  const totalPages = Math.ceil((data.total ?? 0) / GROUPS_LIMIT);
 
   const handleContinueTaskTimer = async (description: string) => {
     try {
       await createTimeEntry(description);
       success('Timer continued successfully!');
     } catch (e) {
-      if (!isAxiosError<ApiErrorPayload>(e)) {
-        console.error('Non-API Error during timer continuation:', e);
-        error('An unexpected error occurred. Please try again.');
-        return;
-      }
-
-      const errorCode = e.response?.data.code;
-      const serverMessage = e.response?.data.message;
-
-      switch (errorCode) {
-        case ErrorCode.INTERNAL_SERVER_ERROR:
-          error('An internal server error occurred. Please try again later.');
-          break;
-        default:
-          console.error('API Error during timer continuation:', {
-            code: errorCode,
-            message: serverMessage,
-            status: e.response?.status,
-          });
-          error(serverMessage || 'Failed to continue timer. Please try again.');
-      }
+      handleTimeEntryError(e, 'continue timer', notify);
     }
   };
 
   const handleStopTaskTimer = async () => {
     if (!activeTimeEntry?.id) return;
-
     try {
       await stopTimeEntry(activeTimeEntry.id);
       success('Timer stopped successfully!');
     } catch (e) {
-      if (!isAxiosError<ApiErrorPayload>(e)) {
-        console.error('Non-API Error during timer stop:', e);
-        error('An unexpected error occurred. Please try again.');
-        return;
-      }
-
-      const errorCode = e.response?.data.code;
-      const serverMessage = e.response?.data.message;
-
-      switch (errorCode) {
-        case ErrorCode.TIME_ENTRY_NOT_FOUND:
-          error('Time entry not found.');
-          break;
-        case ErrorCode.TIME_ENTRY_ALREADY_STOPPED:
-          error('Time entry is already stopped.');
-          break;
-        case ErrorCode.INTERNAL_SERVER_ERROR:
-          error('An internal server error occurred. Please try again later.');
-          break;
-        default:
-          console.error('API Error during timer stop:', {
-            code: errorCode,
-            message: serverMessage,
-            status: e.response?.status,
-          });
-          error(serverMessage || 'Failed to stop timer. Please try again.');
-      }
+      handleTimeEntryError(e, 'stop timer', notify, {
+        [ErrorCode.TIME_ENTRY_NOT_FOUND]: 'Time entry not found.',
+        [ErrorCode.TIME_ENTRY_ALREADY_STOPPED]: 'Time entry is already stopped.',
+      });
     }
   };
 
@@ -111,30 +65,9 @@ function TimeEntryList() {
       await deleteTimeEntry(id);
       success('Timer deleted successfully!');
     } catch (e) {
-      if (!isAxiosError<ApiErrorPayload>(e)) {
-        console.error('Non-API Error during timer delete:', e);
-        error('An unexpected error occurred. Please try again.');
-        return;
-      }
-
-      const errorCode = e.response?.data.code;
-      const serverMessage = e.response?.data.message;
-
-      switch (errorCode) {
-        case ErrorCode.TIME_ENTRY_NOT_FOUND:
-          error('Time entry not found.');
-          break;
-        case ErrorCode.INTERNAL_SERVER_ERROR:
-          error('An internal server error occurred. Please try again later.');
-          break;
-        default:
-          console.error('API Error during timer delete:', {
-            code: errorCode,
-            message: serverMessage,
-            status: e.response?.status,
-          });
-          error(serverMessage || 'Failed to delete timer. Please try again.');
-      }
+      handleTimeEntryError(e, 'delete timer', notify, {
+        [ErrorCode.TIME_ENTRY_NOT_FOUND]: 'Time entry not found.',
+      });
     }
   };
 
@@ -145,6 +78,8 @@ function TimeEntryList() {
           <TimeEntryItem
             groupId={group.id}
             entriesCount={group.entriesCount}
+            startTime={group.startTime}
+            endTime={group.endTime}
             entry={group.entry}
             isTimerRunning={isGroupTimerRunning(group.id, activeTimeEntry)}
             description={group.description}
@@ -158,7 +93,7 @@ function TimeEntryList() {
         currentPage={page}
         totalPages={totalPages}
         totalItems={data.total}
-        limit={LIMIT}
+        limit={GROUPS_LIMIT}
         onPageChange={setPage}
       />
     </div>

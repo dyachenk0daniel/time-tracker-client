@@ -1,7 +1,11 @@
 import { ComponentProps } from 'react';
 import cn from 'classnames';
-import TimeEntryUtils from '@entities/time-entry/utils';
+import TimeEntryHelpers from '@entities/time-entry/utils';
 import Button from '@shared/components/button';
+import PlayIcon from '@shared/components/icons/play-icon';
+import StopIcon from '@shared/components/icons/stop-icon';
+import TrashIcon from '@shared/components/icons/trash-icon';
+import SpinnerIcon from '@shared/components/icons/spinner-icon';
 import s from './styles.module.scss';
 
 interface TimeEntryRowProps extends ComponentProps<'div'> {
@@ -35,18 +39,16 @@ export function TimeEntryRow({
   className,
   ...props
 }: TimeEntryRowProps) {
+  const hasMultipleEntries = count === undefined || count > 1;
+  const isTimerActive = isTimerRunning;
+  const canDelete = !!endTime;
+
   return (
     <div className={cn(s.timeEntryRow, className)} {...props}>
       <div className={s.entryLeft}>
-        {isExpandable && (count === undefined || count > 1) && (
+        {isExpandable && hasMultipleEntries && (
           <Button variant="outline" className={s.countButton} onClick={onExpandToggle}>
-            {isExpandLoading ? (
-              <svg className={s.spinner} viewBox="0 0 20 20" fill="none">
-                <circle className={s.spinnerPath} cx="10" cy="10" r="7" strokeWidth="2.5" />
-              </svg>
-            ) : (
-              (count ?? '…')
-            )}
+            {isExpandLoading ? <SpinnerIcon className={s.spinner} /> : (count ?? '…')}
           </Button>
         )}
         {!isExpandable && <span className={s.countPlaceholder}></span>}
@@ -54,7 +56,7 @@ export function TimeEntryRow({
       </div>
       <div className={s.entryRight}>
         <span className={s.timeEntryTime}>
-          {TimeEntryUtils.formatTime(startTime)} - {TimeEntryUtils.formatTime(endTime)}
+          {TimeEntryHelpers.formatTime(startTime)} - {TimeEntryHelpers.formatTime(endTime)}
         </span>
         <span className={s.verticalDivider}></span>
         <span className={s.duration}>{duration}</span>
@@ -63,54 +65,15 @@ export function TimeEntryRow({
           {onStopTaskTimer && onContinueTaskTimer && (
             <Button
               variant="ghost"
-              className={cn(s.continueButton, { [s.stop]: isTimerRunning })}
-              onClick={() => (isTimerRunning ? onStopTaskTimer?.() : onContinueTaskTimer?.(description))}
+              className={cn(s.continueButton, { [s.stop]: isTimerActive })}
+              onClick={() => (isTimerActive ? onStopTaskTimer() : onContinueTaskTimer(description))}
             >
-              {isTimerRunning ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  className={s.continueIcon}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="6" y="4" width="12" height="16" rx="1" />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  className={s.continueIcon}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M5 3l14 9-14 9V3z" />
-                </svg>
-              )}
+              {isTimerActive ? <StopIcon className={s.continueIcon} /> : <PlayIcon className={s.continueIcon} />}
             </Button>
           )}
           {onDeleteTimeEntry && (
-            <Button disabled={!endTime} variant="ghost" className={s.deleteButton} onClick={onDeleteTimeEntry}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className={s.deleteIcon}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M3 6h18" />
-                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                <path d="M5 6l1 16h12l1-16" />
-              </svg>
+            <Button disabled={!canDelete} variant="ghost" className={s.deleteButton} onClick={onDeleteTimeEntry}>
+              <TrashIcon className={s.continueIcon} />
             </Button>
           )}
         </div>

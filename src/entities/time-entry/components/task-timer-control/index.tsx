@@ -1,18 +1,20 @@
-import { ChangeEvent, useEffect, useOptimistic, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
+import { useOptimistic } from 'react';
 import {
   useCreateTimeEntryMutation,
   useGetActiveTimeEntryQuery,
   useStopTimeEntryMutation,
 } from '@entities/time-entry/hooks.ts';
-import TimeEntryUtils from '@entities/time-entry/utils.ts';
+import { handleTimeEntryError } from '@entities/time-entry/handle-error';
+import { TimeEntry } from '@entities/time-entry/types.ts';
+import { ErrorCode } from '@shared/api/error-code.ts';
+import useElapsedTimer from '@entities/time-entry/use-elapsed-timer';
 import Input from '@shared/components/input';
 import Button from '@shared/components/button';
-import s from './styles.module.scss';
 import { useNotifications } from '@shared/hooks/use-notifications.ts';
-import { isAxiosError } from 'axios';
-import { ApiErrorPayload } from '@shared/api/types.ts';
-import { ErrorCode } from '@shared/api/error-code.ts';
-import { TimeEntry } from '@entities/time-entry/types.ts';
+import s from './styles.module.scss';
+
+const UNNAMED_TASK_PLACEHOLDER = 'Unnamed task';
 
 export function TaskTimerControl() {
   const { mutateAsync: createTimeEntry } = useCreateTimeEntryMutation();
@@ -23,8 +25,10 @@ export function TaskTimerControl() {
     (currentTimeEntry, newTimeEntry) => ({ ...currentTimeEntry, ...newTimeEntry })
   );
   const [description, setDescription] = useState('');
-  const [currentDuration, setCurrentDuration] = useState('--:--:--');
-  const { success, error } = useNotifications();
+  const { success, error: notify } = useNotifications();
+
+  const isActive = !!timeEntry && timeEntry.endTime === null;
+  const currentDuration = useElapsedTimer(timeEntry?.startTime, isActive);
 
   const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
@@ -36,28 +40,7 @@ export function TaskTimerControl() {
       setTimeEntry(newTimeEntry);
       success('Timer started successfully!');
     } catch (e) {
-      if (!isAxiosError<ApiErrorPayload>(e)) {
-        console.error('Non-API Error during timer start:', e);
-        error('An unexpected error occurred. Please try again.');
-        return;
-      }
-
-      const errorCode = e.response?.data.code;
-      const serverMessage = e.response?.data.message;
-
-      switch (errorCode) {
-        case ErrorCode.INTERNAL_SERVER_ERROR:
-          error('An internal server error occurred. Please try again later.');
-          break;
-        default:
-          console.error('API Error during timer start:', {
-            code: errorCode,
-            message: serverMessage,
-            status: e.response?.status,
-          });
-          error(serverMessage || 'Failed to start timer. Please try again.');
-      }
-
+      handleTimeEntryError(e, 'start timer', notify);
       setTimeEntry(null);
     }
   };
@@ -68,33 +51,10 @@ export function TaskTimerControl() {
       setTimeEntry(null);
       success('Timer stopped successfully!');
     } catch (e) {
-      if (!isAxiosError<ApiErrorPayload>(e)) {
-        console.error('Non-API Error during timer stop:', e);
-        error('An unexpected error occurred. Please try again.');
-        return;
-      }
-
-      const errorCode = e.response?.data.code;
-      const serverMessage = e.response?.data.message;
-
-      switch (errorCode) {
-        case ErrorCode.TIME_ENTRY_NOT_FOUND:
-          error('Time entry not found.');
-          break;
-        case ErrorCode.TIME_ENTRY_ALREADY_STOPPED:
-          error('Time entry is already stopped.');
-          break;
-        case ErrorCode.INTERNAL_SERVER_ERROR:
-          error('An internal server error occurred. Please try again later.');
-          break;
-        default:
-          console.error('API Error during timer stop:', {
-            code: errorCode,
-            message: serverMessage,
-            status: e.response?.status,
-          });
-          error(serverMessage || 'Failed to stop timer. Please try again.');
-      }
+      handleTimeEntryError(e, 'stop timer', notify, {
+        [ErrorCode.TIME_ENTRY_NOT_FOUND]: 'Time entry not found.',
+        [ErrorCode.TIME_ENTRY_ALREADY_STOPPED]: 'Time entry is already stopped.',
+      });
     }
   };
 
@@ -103,36 +63,19 @@ export function TaskTimerControl() {
       setDescription('');
       return stopTimer();
     }
-
     return startTimer();
   };
 
-  const isActive = !!timeEntry && timeEntry?.endTime === null;
-
-  useEffect(() => {
-    if (!isActive) {
-      setCurrentDuration('--:--:--');
-      return;
-    }
-
-    let animationFrameId: number;
-
-    const updateTimer = () => {
-      const now = new Date().toISOString();
-      const duration = TimeEntryUtils.formatEntryDuration(timeEntry?.startTime as string, now);
-      setCurrentDuration(duration);
-      animationFrameId = requestAnimationFrame(updateTimer);
-    };
-
-    animationFrameId = requestAnimationFrame(updateTimer);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isActive, timeEntry?.startTime]);
+  const taskName = timeEntry?.description || UNNAMED_TASK_PLACEHOLDER;
+  const buttonLabel = isLoading ? 'Loading...' : isActive ? 'Stop' : 'Start';
+  const buttonVariant = isLoading ? 'secondary' : isActive ? 'danger' : 'primary';
+  const isButtonDisabled = isLoading || (!isActive && !description.trim());
 
   return (
     <div className={s.inputSection}>
       {isActive ? (
         <div className={s.taskDescription} aria-live="polite">
-          <span className={s.taskName}>{timeEntry?.description || 'Unnamed task'}</span>
+          <span className={s.taskName}>{taskName}</span>
           <span className={s.verticalDivider}></span>
           <span className={s.duration} aria-label={`Elapsed time: ${currentDuration}`}>
             {currentDuration}
@@ -149,13 +92,13 @@ export function TaskTimerControl() {
         />
       )}
       <Button
-        disabled={isLoading || (!isActive && !description.trim())}
-        variant={isLoading ? 'secondary' : !isActive ? 'primary' : 'danger'}
+        disabled={isButtonDisabled}
+        variant={buttonVariant}
         className={s.startButton}
         onClick={handleStartButtonClick}
         aria-label={isActive ? 'Stop timer' : 'Start timer'}
       >
-        {isLoading ? 'Loading...' : !isActive ? 'Start' : 'Stop'}
+        {buttonLabel}
       </Button>
     </div>
   );

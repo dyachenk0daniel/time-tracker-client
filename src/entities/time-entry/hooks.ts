@@ -1,5 +1,6 @@
 import {
   InfiniteData,
+  QueryClient,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
   UseInfiniteQueryResult,
@@ -9,14 +10,23 @@ import {
   UseQueryOptions,
 } from '@tanstack/react-query';
 import TimeEntryApi from '@entities/time-entry/api';
+import { ENTRIES_LIMIT } from '@entities/time-entry/constants';
 import { PaginatedResponse, TimeEntry, TimeEntryGroup } from '@entities/time-entry/types';
 
-export const ENTRIES_LIMIT = 20;
+export { ENTRIES_LIMIT } from '@entities/time-entry/constants';
 
 enum TimeEntryQueryKeys {
   TIME_ENTRIES = 'time-entries',
   ACTIVE_TIME_ENTRY = 'time-entries/active',
   GROUP_ENTRIES = 'time-entries/group-entries',
+}
+
+async function invalidateTimeEntryQueries(queryClient: QueryClient): Promise<void> {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.TIME_ENTRIES] }),
+    queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.ACTIVE_TIME_ENTRY] }),
+    queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.GROUP_ENTRIES] }),
+  ]);
 }
 
 export function useGetTimeEntriesQuery(
@@ -69,13 +79,7 @@ export function useCreateTimeEntryMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (description: string) => TimeEntryApi.create(description),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.TIME_ENTRIES] }),
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.ACTIVE_TIME_ENTRY] }),
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.GROUP_ENTRIES] }),
-      ]);
-    },
+    onSuccess: () => invalidateTimeEntryQueries(queryClient),
   });
 }
 
@@ -83,13 +87,7 @@ export function useStopTimeEntryMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => TimeEntryApi.stop(id),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.TIME_ENTRIES] }),
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.ACTIVE_TIME_ENTRY] }),
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.GROUP_ENTRIES] }),
-      ]);
-    },
+    onSuccess: () => invalidateTimeEntryQueries(queryClient),
   });
 }
 
@@ -97,12 +95,6 @@ export function useDeleteTimeEntryMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => TimeEntryApi.delete(id),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.TIME_ENTRIES] }),
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.ACTIVE_TIME_ENTRY] }),
-        queryClient.invalidateQueries({ queryKey: [TimeEntryQueryKeys.GROUP_ENTRIES] }),
-      ]);
-    },
+    onSuccess: () => invalidateTimeEntryQueries(queryClient),
   });
 }
