@@ -13,6 +13,8 @@ export interface TimeEntryGroup {
   userId: string;
   description: string;
   entriesCount: number;
+  startTime: string | null;
+  endTime: string | null;
   entry: TimeEntry | null;
 }
 

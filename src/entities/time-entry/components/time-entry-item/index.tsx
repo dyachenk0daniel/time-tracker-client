@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { TimeEntry } from '@entities/time-entry/types';
 import TimeEntryHelpers from '@entities/time-entry/utils';
+import useElapsedTimer from '@entities/time-entry/use-elapsed-timer';
 import TimeEntryRow from '@entities/time-entry/components/time-entry-row';
 import TimeEntryVirtualList from '@entities/time-entry/components/time-entry-virtual-list';
 import { useGetGroupEntriesInfiniteQuery } from '@entities/time-entry/hooks';
@@ -9,6 +10,8 @@ import s from './styles.module.scss';
 interface TimeEntryItemProps {
   groupId: string;
   entriesCount: number;
+  startTime: string | null;
+  endTime: string | null;
   entry: TimeEntry | null;
   description: string;
   onContinueTaskTimer: (description: string) => void;
@@ -20,6 +23,8 @@ interface TimeEntryItemProps {
 export function TimeEntryItem({
   groupId,
   entriesCount,
+  startTime,
+  endTime,
   entry,
   description,
   isTimerRunning = false,
@@ -34,20 +39,15 @@ export function TimeEntryItem({
   );
 
   const allEntries = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
-  const timeRangeSummary = useMemo(
-    () =>
-      entriesCount === 1 && entry
-        ? { startDate: entry.startTime, endDate: entry.endTime }
-        : TimeEntryHelpers.getTimeRangeSummary(allEntries),
-    [entriesCount, entry, allEntries]
-  );
-  const duration = useMemo(
+  const liveDuration = useElapsedTimer(entry?.startTime, isTimerRunning);
+  const staticDuration = useMemo(
     () =>
       entriesCount === 1 && entry
         ? TimeEntryHelpers.formatEntryDuration(entry.startTime, entry.endTime)
         : TimeEntryHelpers.summarizeEntriesDuration(allEntries),
     [entriesCount, entry, allEntries]
   );
+  const duration = isTimerRunning ? liveDuration : staticDuration;
 
   return (
     <div>
@@ -56,8 +56,8 @@ export function TimeEntryItem({
         isTimerRunning={isTimerRunning}
         className={s.timeEntryItem}
         description={description}
-        startTime={timeRangeSummary.startDate}
-        endTime={timeRangeSummary.endDate}
+        startTime={startTime}
+        endTime={endTime}
         duration={duration}
         count={entriesCount}
         isExpandLoading={isExpanded && isFetching && !data}

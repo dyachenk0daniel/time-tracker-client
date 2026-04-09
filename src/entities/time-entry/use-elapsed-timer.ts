@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import TimeEntryHelpers from '@entities/time-entry/utils.ts';
+import TimeEntryHelpers from '@entities/time-entry/utils';
 
 const INITIAL_DURATION = '--:--:--';
 
@@ -7,7 +7,7 @@ function useElapsedTimer(startTime: string | undefined, isActive: boolean): stri
   const [duration, setDuration] = useState(INITIAL_DURATION);
 
   useEffect(() => {
-    if (!isActive) {
+    if (!isActive || !startTime) {
       setDuration(INITIAL_DURATION);
       return;
     }

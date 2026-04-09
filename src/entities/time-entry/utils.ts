@@ -58,14 +58,16 @@ class TimeEntryHelpers {
   static formatTime(time: string | null): string {
     if (!time) return '--:--';
 
-    const date = new Date(time);
-    const year = date.getUTCFullYear();
-    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-    const day = date.getUTCDate().toString().padStart(2, '0');
-    const hours = date.getUTCHours().toString().padStart(2, '0');
-    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    const { locale, timeZone } = Intl.DateTimeFormat().resolvedOptions();
 
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
+    return new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone,
+    }).format(new Date(time));
   }
 
   static summarizeEntriesDuration<T extends { startTime: string; endTime: string | null }>(entries: T[]): string {

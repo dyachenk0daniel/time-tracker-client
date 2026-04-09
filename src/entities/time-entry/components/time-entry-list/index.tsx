@@ -78,6 +78,8 @@ function TimeEntryList() {
           <TimeEntryItem
             groupId={group.id}
             entriesCount={group.entriesCount}
+            startTime={group.startTime}
+            endTime={group.endTime}
             entry={group.entry}
             isTimerRunning={isGroupTimerRunning(group.id, activeTimeEntry)}
             description={group.description}
