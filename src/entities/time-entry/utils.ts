@@ -1,6 +1,6 @@
 import { groupBy } from 'lodash-es';
 
-class TimeEntryUtils {
+class TimeEntryHelpers {
   static groupEntriesByDescription<T extends { description: string }>(
     entries: T[]
   ): Array<{
@@ -101,4 +101,4 @@ class TimeEntryUtils {
   }
 }
 
-export default TimeEntryUtils;
+export default TimeEntryHelpers;

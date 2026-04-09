@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { TimeEntry } from '@entities/time-entry/types';
-import TimeEntryUtils from '@entities/time-entry/utils';
+import TimeEntryHelpers from '@entities/time-entry/utils';
 import TimeEntryRow from '@entities/time-entry/components/time-entry-row';
 import TimeEntryVirtualList from '@entities/time-entry/components/time-entry-virtual-list';
 import { useGetGroupEntriesInfiniteQuery } from '@entities/time-entry/hooks';
@@ -38,14 +38,14 @@ export function TimeEntryItem({
     () =>
       entriesCount === 1 && entry
         ? { startDate: entry.startTime, endDate: entry.endTime }
-        : TimeEntryUtils.getTimeRangeSummary(allEntries),
+        : TimeEntryHelpers.getTimeRangeSummary(allEntries),
     [entriesCount, entry, allEntries]
   );
   const duration = useMemo(
     () =>
       entriesCount === 1 && entry
-        ? TimeEntryUtils.formatEntryDuration(entry.startTime, entry.endTime)
-        : TimeEntryUtils.summarizeEntriesDuration(allEntries),
+        ? TimeEntryHelpers.formatEntryDuration(entry.startTime, entry.endTime)
+        : TimeEntryHelpers.summarizeEntriesDuration(allEntries),
     [entriesCount, entry, allEntries]
   );
 
